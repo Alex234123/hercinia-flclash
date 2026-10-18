@@ -48,6 +48,9 @@ jobs:
           {
             echo "flutter.sdk=$FLUTTER_ROOT"
             echo "sdk.dir=$ANDROID_HOME"
+            echo "storePassword=hercinia123"
+            echo "keyPassword=hercinia123"
+            echo "keyAlias=hercinia"
           } > android/local.properties
           flutter build apk --release
 
