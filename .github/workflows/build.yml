@@ -13,35 +13,42 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
+          channel: stable
           flutter-version: '3.47.6'
-          channel: 'stable'
           cache: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup NDK
+        uses: nttld/setup-ndk@v1
+        id: ndk
+        with:
+          ndk-version: r28c
+          link-to-sdk: true
 
-      - name: Install NDK
-        run: |
-          sdkmanager "ndk;28.2.13676358"
-          sdkmanager "cmake;3.22.1"
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Build APK
+        env:
+          ANDROID_NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}
         run: |
-          flutter pub get
+          {
+            echo "flutter.sdk=$FLUTTER_ROOT"
+            echo "sdk.dir=$ANDROID_HOME"
+          } > android/local.properties
           flutter build apk --release
 
       - name: Upload APK
