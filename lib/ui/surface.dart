@@ -155,7 +155,8 @@ extension AppSurfaceThemeExt on ThemeData {
       dividerTheme: dividerTheme.copyWith(
         color: colorScheme.onSurface.withValues(alpha: 0.14),
       ),
-      scaffoldBackgroundColor: page,
+      // 页面层留出透明度让 Hercinia 背景透出；卡片仍为实色，保证正文可读。
+      scaffoldBackgroundColor: page.withValues(alpha: _pageVeilAlpha),
       cardTheme: cardTheme.copyWith(color: card, elevation: 0),
       dialogTheme: dialogTheme.copyWith(backgroundColor: floating),
       popupMenuTheme: popupMenuTheme.copyWith(color: floating),
@@ -198,6 +199,9 @@ extension AppSurfaceThemeExt on ThemeData {
 
 const _focusRingWidth = 2.0;
 const _focusRingGap = 1.0;
+
+/// 页面底色保留的实色比例；其余透出底图，形成磨砂观感。
+const _pageVeilAlpha = 0.72;
 
 /// The focus ring of `.agents/surfaces.md`; one that [standsOff] clears the
 /// edge, which a primary fill or a button's own glass would hide it on.

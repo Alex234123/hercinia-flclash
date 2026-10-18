@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'dart:ui' show lerpDouble;
+import 'dart:ui' show ImageFilter, lerpDouble;
 
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
@@ -59,25 +59,32 @@ class DashboardCard extends StatelessWidget {
     return Semantics(
       container: true,
       label: semanticLabel,
-      child: Container(
-        clipBehavior: clipBehavior,
-        decoration: ShapeDecoration(
-          color: DashboardColors.of(context).card,
-          shape: shape,
-          shadows: DashboardShadows.e1(context),
-        ),
-        child: Material(
-          type: MaterialType.transparency,
-          child: onTap == null
-              ? content
-              : FocusRing(
-                  shape: shape,
-                  child: InkWell(
-                    customBorder: shape,
-                    onTap: onTap,
-                    child: content,
-                  ),
-                ),
+      child: ClipPath(
+        clipper: ShapeBorderClipper(shape: shape),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+          child: Container(
+            clipBehavior: clipBehavior,
+            decoration: ShapeDecoration(
+              // 玻璃质感：卡片实色略降不透明度，让底图在卡片后透出模糊光晕。
+              color: DashboardColors.of(context).card.withValues(alpha: 0.82),
+              shape: shape,
+              shadows: DashboardShadows.e1(context),
+            ),
+            child: Material(
+              type: MaterialType.transparency,
+              child: onTap == null
+                  ? content
+                  : FocusRing(
+                      shape: shape,
+                      child: InkWell(
+                        customBorder: shape,
+                        onTap: onTap,
+                        child: content,
+                      ),
+                    ),
+            ),
+          ),
         ),
       ),
     );
